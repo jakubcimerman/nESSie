@@ -1,0 +1,111 @@
+\documentclass[a4paper]{article}
+\usepackage[english]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{listings}
+\usepackage{color}
+\usepackage[top=3cm, bottom=3cm, right=3cm, left=3cm]{geometry}
+
+\definecolor{codegreen}{rgb}{0,0.6,0}
+\definecolor{codegray}{rgb}{0.5,0.5,0.5}
+\definecolor{codepurple}{rgb}{0.58,0,0.82}
+\definecolor{backcolour}{rgb}{0.95,0.95,0.92}
+ 
+\lstdefinestyle{mystyle}{
+    backgroundcolor=\color{backcolour},   
+    commentstyle=\color{codegreen},
+    keywordstyle=\color{magenta},
+    numberstyle=\tiny\color{codegray},
+    stringstyle=\color{codepurple},
+    basicstyle=\footnotesize,
+    breakatwhitespace=false,         
+    breaklines=true,                 
+    captionpos=b,                    
+    keepspaces=true,                 
+    numbers=left,                    
+    numbersep=5pt,                  
+    showspaces=false,                
+    showstringspaces=false,
+    showtabs=false,                  
+    tabsize=2
+}
+ 
+\lstset{style=mystyle}
+
+\begin{document}
+\section*{nESSie - Event Shape Sorter}
+nESSie is Event Shape Sorting algorithm, which sort your events according to their similar shapes. The main advantage of this algorithm is that it takes into account all orders of anisotropies at the same time.
+
+\subsection*{Running program}
+The program is running in Linux (tested on Ubuntu 16.04). To compile it, you can use Makefile and just type in terminal:
+\begin{lstlisting}[language=c]
+make
+\end{lstlisting}
+
+Then you can run program by typing:
+\begin{lstlisting}[language=c]
+./main.exe
+\end{lstlisting}
+
+\subsection*{Input to program}
+The input file containing data should be in OSCAR1997A format. That means the file should looks like this
+\begin{lstlisting}[language=c]
+# OSC1997A
+# final_id_p_x
+# UrQMD
+1 	3223	8.547	0
+1	-2212	-0.27254	0.0829967	0.31003	1.02817	0.938	-0.829524	5.68779	10.2909	32.7802
+...
+2	2038	9.967	0
+1	111	-0.279362	0.112469	10.1903	10.1957	0.138	5.02633	3.11084	199.578	200
+...
+\end{lstlisting}
+
+The first three lines are information about format and generator, so their are skipped. Then follows information about event: its number, number of particles in this event, impact parameter\footnote{which is not important for sorting algorithm} and $0$.
+After this line follows list of all particles in event with its properties: number, PDG particle code, $p_1$, $p_2$, $p_3$, $p_0$, mass of particle, $x_1$, $x_2$, $x_3$ and $x_0$.
+
+\subsection*{Input parameters}
+
+To change parameters of algorithm, use file \textit{params.h}. The parameters you can set are:
+\begin{lstlisting}[language=c]
+const int64_t NoEvents = 10000;
+const int NoAzibins = 20;
+const int NoBins = 10;
+
+const int RelevantParticles = 0;
+const float RapidityCut = 1.0;
+const int AnisotropyOrder = 2;
+
+const char* DataDirectory = "../essTest/";
+const char* DataFile = "DRAGON_events.out";
+\end{lstlisting}
+
+\textbf{NoEvents} - Number of events in datafile. This number has to be equal to actual number of events.
+
+\textbf{NoAzibins} - To find out shape of event, algorithm uses azimuthal angle histograms. This parameter sets number of bins for azimuthal angle. More bins, better shape description, but also worse statistics. Default value: 20.
+
+\textbf{NoBins} - Number of event classes, in which all events are splitted. Bigger the number is, classes become smaller and more similar, but again there is worse statistics. Default value: 10.
+
+\textbf{RelevantParticles} - Simple switch which choose, which particles will be taken in account. Rotations of events and also sorting will assume only these particles. Possible values are:
+\begin{itemize}
+\item 0 - all charged particles
+\item 1 - all charged pions
+\item 2 - all charged kaons
+\item 3 - all protons
+\end{itemize}
+
+\textbf{RapidityCut} - Cut on rapidity. Particles with higher rapidity will not be taken in account. Default value: 1.0.
+
+\textbf{AnisotropyOrder} - First part of the program rotate all events to the same direction of ${\vec{q_n}=\left(\left\langle \cos(n\phi)\right\rangle ,\left\langle \sin(n\phi)\right\rangle \right) }$. This parameter is simple the $n$, so all events are rotated according to $n$-th anisotropy. Default value: 2.
+
+\subsection*{Output of program}
+
+Output of this program is located in directory results. All result files contain date and time in their names, so you don't have to worry that result files will be replaced. There are three types of result files:
+\begin{itemize}
+\item \textit{yymmdd\_hhmmss\_id\_events} - This is the order of the events after sorting process. The numbers in this files are original order numbers of events.
+\item \textit{yymmdd\_hhmmss\_av\_bin} - There are histograms of average events for each class. That means you will find here \textit{NoBins} columns and \textit{NoAzibins} rows of data. For better plotting (in gnuplot for example) the first column contains middle azimuthal angle for each azimuthal bin.
+\item \textit{yymmdd\_hhmmss\_bin\_i} - Each of these files contain list of all events in class, their azimuthal histograms and also mean class number $\mu$, which is the last number in each row.
+\end{itemize}
+
+\end{document}
