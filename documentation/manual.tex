@@ -76,9 +76,11 @@ const int NoBins = 10;
 const int RelevantParticles = 0;
 const float RapidityCut = 1.0;
 const int AnisotropyOrder = 2;
+const float ptMin = 0.0;
+const float ptMax = 10.0;
 
-const char* DataDirectory = "../essTest/";
-const char* DataFile = "DRAGON_events.out";
+const char* DataDirectory = "./";
+const char* DataFile = "GENERATOR_events.out";
 \end{lstlisting}
 
 \textbf{NoEvents} - Number of events in datafile. This number has to be equal to actual number of events.
@@ -98,6 +100,12 @@ const char* DataFile = "DRAGON_events.out";
 \textbf{RapidityCut} - Cut on rapidity. Particles with higher rapidity will not be taken in account. Default value: 1.0.
 
 \textbf{AnisotropyOrder} - First part of the program rotate all events to the same direction of ${\vec{q_n}=\left(\left\langle \cos(n\phi)\right\rangle ,\left\langle \sin(n\phi)\right\rangle \right) }$. This parameter is simple the $n$, so all events are rotated according to $n$-th anisotropy. Default value: 2.
+
+\textbf{ptMin \& ptMax} - Cut on $p_t$ in GeV. Default values are set large enough to accept all particles. Default values: 0.0 and 10.0.
+
+\textbf{DataDirectory} - Path to the input datafile. Can be set relative to the program directory. Default value: "./"
+
+\textbf{DataFile} - Name of the input datafile, depends on generator.
 
 \subsection*{Output of program}
 
