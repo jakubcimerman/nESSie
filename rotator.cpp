@@ -33,14 +33,14 @@ void Rotate(double** Particles, long NoParticles, int AnisotropyOrder) {
   double qphi = arct(qy, qx);
   for (long ind = 0; ind < NoParticles; ind++) {
     // Rotation of all momenta
-    double px = Particles[ind][2] * cos(qphi / 2) + Particles[ind][3] * sin(qphi / 2);
-    double py = - Particles[ind][2] * sin(qphi / 2) + Particles[ind][3] * cos(qphi / 2);
+    double px = Particles[ind][2] * cos(qphi / AnisotropyOrder) + Particles[ind][3] * sin(qphi / AnisotropyOrder);
+    double py = - Particles[ind][2] * sin(qphi / AnisotropyOrder) + Particles[ind][3] * cos(qphi / AnisotropyOrder);
     Particles[ind][2] = px;
     Particles[ind][3] = py;
 
     // Rotation of positions of particles
-    double x = Particles[ind][7] * cos(qphi / 2) + Particles[ind][8] * sin(qphi / 2);
-    double y = - Particles[ind][7] * sin(qphi / 2) + Particles[ind][8] * cos(qphi / 2);
+    double x = Particles[ind][7] * cos(qphi / AnisotropyOrder) + Particles[ind][8] * sin(qphi / AnisotropyOrder);
+    double y = - Particles[ind][7] * sin(qphi / AnisotropyOrder) + Particles[ind][8] * cos(qphi / AnisotropyOrder);
     Particles[ind][7] = x;
     Particles[ind][8] = y;
   }

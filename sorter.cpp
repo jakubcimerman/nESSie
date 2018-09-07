@@ -41,7 +41,7 @@ void Merge(double** arr, long l, long m, long r, int sortPar, int NoProperties) 
   j = 0;  // Initial index of second subarray
   k = l;  // Initial index of merged subarray
   while (i < n1 && j < n2) {
-    if(sortPar == 21) {
+    if(sortPar == 1) {
       if (L[i][sortPar] >= R[j][sortPar]) {
         for (int index = 0; index < NoProperties; index++) {
           arr[k][index] = L[i][index];

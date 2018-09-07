@@ -45,16 +45,16 @@ int main() {
     Event[i] = new double[NoProperties];
   }
   /*  Properties of each event
-      0-19 Azimuthal bins
-      20 NoParticles
-      21 size of q_n
-      22 original event order number
-      23 mu
+      0 NoParticles
+      1 size of q_n
+      2 original event order number
+      3 mu
+      4+ Azimuthal bins
   */
   for (long i=0; i < NoEvents; i++) {
-    Event[i][20] = 0;
-    Event[i][21] = 0;
-    for (int j=0; j < NoAzibins; j++) {
+    Event[i][0] = 0;
+    Event[i][1] = 0;
+    for (int j=4; j < NoProperties; j++) {
       Event[i][j] = 0;
     }
   }
@@ -103,27 +103,27 @@ int main() {
       for (int j=0; j < 11; j++) {
         data >> Particles[i][j];
       }
-      Particles[i][11] = ParticleChecker(Particles[i], RelevantParticles, RapidityCut);
+      Particles[i][11] = ParticleChecker(Particles[i], RelevantParticles, RapidityCut, ptMin, ptMax);
     }
 
     // Rotate event
-    //Rotate(Particles, NoParticles, AnisotropyOrder);
+    Rotate(Particles, NoParticles, AnisotropyOrder);
 
     // Fill event array
     for (long i=0; i < NoParticles; i++) {
       if (Particles[i][11] == 1) {
         phi = arct(Particles[i][3], Particles[i][2]);
         BinNumber = floor(phi/BinWidth);
-        Event[EventNumber][21] += cos(AnisotropyOrder*phi);
-        Event[EventNumber][BinNumber]++;
-        Event[EventNumber][20]++;
-        Event[EventNumber][22] = EventNumber;
+        Event[EventNumber][1] += cos(AnisotropyOrder*phi);
+        Event[EventNumber][BinNumber + 4]++;
+        Event[EventNumber][0]++;
+        Event[EventNumber][2] = EventNumber;
       }
     }
 
-    Event[EventNumber][21] /= sqrt(Event[EventNumber][20]);
+    Event[EventNumber][1] /= sqrt(Event[EventNumber][0]);
     cout << "Event number " << EventNumber << " loaded with ";
-    cout << Event[EventNumber][20] << " particles." << endl;
+    cout << Event[EventNumber][0] << " particles." << endl;
 
     for (long i = 0; i < NoParticles; i++) {
       delete[] Particles[i];
@@ -133,12 +133,12 @@ int main() {
 
   // Initial sorting according to value of q_n vector
   cout << "Initial sorting begun." << endl;
-  Sort(Event, 0, NoEvents-1, 21, NoProperties);
+  Sort(Event, 0, NoEvents-1, 1, NoProperties);
   cout << "Initial sorting done." << endl;
 
   cout << "Event shape sorting begun" << endl;
 
-  /*double* previousSort = new double[NoEvents];
+  double* previousSort = new double[NoEvents];
   long iter = 0;
   bool Sorted = false;
   long NoChanges = 0;
@@ -150,19 +150,19 @@ int main() {
 
   while (Sorted == false) {
     for (long enr = 0; enr < NoEvents; enr++) {
-      previousSort[enr] = Event[enr][22];
+      previousSort[enr] = Event[enr][2];
     }
 
-    cout << iter << ". cycle begun" << "\t";
+    cout << iter << ". cycle begun ";
 
     for (int mu=0; mu < NoBins; mu++) {
       for (int i=0; i < NoAzibins; i++) {
         double TotalParticles = 0;
         double ParticlesInI = 0;
         for (long enr=mu*NoEvents/NoBins; enr < (mu+1)*NoEvents/NoBins; enr++) {
-          ParticlesInI += Event[enr][i];
+          ParticlesInI += Event[enr][i + 4];
           for (int bnr = 0; bnr < NoAzibins; bnr++) {
-            TotalParticles += Event[enr][bnr];
+            TotalParticles += Event[enr][bnr + 4];
           }
         }
         P_i_mu[i][mu] = ParticlesInI/TotalParticles;
@@ -174,14 +174,14 @@ int main() {
       for (int mu=0; mu < NoBins; mu++) {
         long double citatel = 0;
         for (int i=0; i< NoAzibins; i++) {
-          citatel += Event[enr][i]*log(P_i_mu[i][mu]);
+          citatel += Event[enr][i + 4]*log(P_i_mu[i][mu]);
         }
 
         long double menovatel = 0;
         for (int muu=0; muu < NoBins; muu++) {
           long double clen = 0;
           for (int i=0; i< NoAzibins; i++) {
-            clen += Event[enr][i]*logl(P_i_mu[i][muu]);
+            clen += Event[enr][i + 4]*logl(P_i_mu[i][muu]);
           }
           clen -= citatel;
           menovatel += expl(clen);
@@ -191,32 +191,18 @@ int main() {
         sum += P_mu_ni[mu][enr];
       }
 
-      Event[enr][23] = 0;
+      Event[enr][3] = 0;
       for (int mu=0; mu < NoBins; mu++) {
-        Event[enr][23] += (mu+1)*P_mu_ni[mu][enr];
+        Event[enr][3] += (mu+1)*P_mu_ni[mu][enr];
       }
     }
 
-    Sort(Event, 0, NoEvents-1, 23, NoProperties);
-
-    ofstream file("results/av_bin");
-    for (int i=0; i < NoAzibins; i++) {
-      file << BinWidth*(2*i+1)*0.5 << "\t";
-      for (int mu=0; mu < NoBins; mu++) {
-        double ParticlesInI = 0;
-        for (long enr=mu*NoEvents/NoBins; enr < (mu+1)*NoEvents/NoBins; enr++) {
-          ParticlesInI += Event[enr][i];
-        }
-        file << floor(ParticlesInI*NoBins/NoEvents) << "\t";
-      }
-      file << endl;
-    }
-    file.close();
+    Sort(Event, 0, NoEvents-1, 3, NoProperties);
 
     Sorted = true;
     NoChanges = 0;
     for (long enr = 0; enr < NoEvents; enr++) {
-      if (previousSort[enr] != Event[enr][22]) {
+      if (previousSort[enr] != Event[enr][2]) {
         Sorted = false;
         NoChanges++;
       }
@@ -224,7 +210,11 @@ int main() {
 
     cout << NoChanges << " changes made." << endl;
     iter++;
-  }*/
+    if (iter > MaxNoCycles) {
+      cout << "Maximum number of cycles reached." << endl;
+      break;
+    }
+  }
 
   cout << "Event shape sorting done." << endl;
 
@@ -246,14 +236,13 @@ int main() {
   outFile1 << outdir << "av_bin";
   string outstring1(outFile1.str());
   const char* filename1 = outstring1.c_str();
-  cout << filename1 << endl;
   file.open(filename1);
   for (int i=0; i < NoAzibins; i++) {
     file << BinWidth*(2*i+1)*0.5 << "\t";
     for (int mu=0; mu < NoBins; mu++) {
       double ParticlesInI = 0;
       for (long enr=mu*NoEvents/NoBins; enr < (mu+1)*NoEvents/NoBins; enr++) {
-        ParticlesInI += Event[enr][i];
+        ParticlesInI += Event[enr][i + 4];
       }
       file << floor(ParticlesInI*NoBins/NoEvents) << "\t";
     }
@@ -267,7 +256,7 @@ int main() {
   const char* filename2 = outstring2.c_str();
   file.open(filename2);
   for (long enr=0; enr < NoEvents; enr++) {
-    file << Event[enr][22] << endl;
+    file << Event[enr][2] << endl;
   }
   file.close();
 
@@ -280,9 +269,9 @@ int main() {
     for (long enr=mu*NoEvents/NoBins; enr < (mu+1)*NoEvents/NoBins; enr++) {
       file << enr - mu*NoEvents/NoBins + 1 << "\t";
       for (int i=0; i < NoAzibins; i++) {
-        file << Event[enr][i] << "\t";
+        file << Event[enr][i + 4] << "\t";
       }
-      file << Event[enr][23] << endl;
+      file << Event[enr][3] << endl;
     }
     file.close();
   }

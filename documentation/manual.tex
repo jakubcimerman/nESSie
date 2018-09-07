@@ -78,6 +78,7 @@ const float RapidityCut = 1.0;
 const int AnisotropyOrder = 2;
 const float ptMin = 0.0;
 const float ptMax = 10.0;
+const int64_t MaxNoCycles = 1000;
 
 const char* DataDirectory = "./";
 const char* DataFile = "GENERATOR_events.out";
@@ -102,6 +103,8 @@ const char* DataFile = "GENERATOR_events.out";
 \textbf{AnisotropyOrder} - First part of the program rotate all events to the same direction of ${\vec{q_n}=\left(\left\langle \cos(n\phi)\right\rangle ,\left\langle \sin(n\phi)\right\rangle \right) }$. This parameter is simple the $n$, so all events are rotated according to $n$-th anisotropy. Default value: 2.
 
 \textbf{ptMin \& ptMax} - Cut on $p_t$ in GeV. Default values are set large enough to accept all particles. Default values: 0.0 and 10.0.
+
+\textbf{MaxNoCycles} - In some initial conditions, algoritm can't find the ideal shapes of classes and program loop forever. For these cases there must be some limit of how many cycles can be done. Default value: 1000.
 
 \textbf{DataDirectory} - Path to the input datafile. Can be set relative to the program directory. Default value: "./"
 
