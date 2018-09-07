@@ -12,9 +12,12 @@ const int RelevantParticles = 0;  /* Here you can choose, which particles will b
                                       3: protons */
 const float RapidityCut = 1.0;  // Rapidity cut on particles which are relevant (default: 1.0)
 const int AnisotropyOrder = 2;  // Anisotropy order, according to which events will be rotated (default: 2)
+const float ptMin = 0.0;  // p_t cut in GeV (default: 0.0)
+const float ptMax = 10.0;  // (default: 10.0)
+const int64_t MaxNoCycles = 1000;  // Maximum number of cycles (default: 1000)
 
-const char* DataDirectory = "../essTest/";  // Directory of your datafile relative to this directory (default: "./")
-const char* DataFile = "DRAGON_events.out";  // Name of the file (default: "events.out")
+const char* DataDirectory = "./";  // Directory of your datafile relative to this directory (default: "./")
+const char* DataFile = "GENERATOR_events.out";  // Name of the file (default: "events.out")
 
 /*
 Here are other parameters, that should't be changed by users
