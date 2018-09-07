@@ -80,7 +80,7 @@ int main() {
   long EventNumber;
   long NoParticles;
   int BinNumber;
-  int EmptyInput;
+  double EmptyInput;
   double BinWidth = 2*M_PI/NoAzibins;
   double phi;
 
