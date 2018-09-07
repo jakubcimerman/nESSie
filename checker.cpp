@@ -9,16 +9,19 @@
 
 using namespace std;
 
-double ParticleChecker(double* Particle, int RelevantParticles, float RapidityCut) {
+double ParticleChecker(double* Particle, int RelevantParticles, float RapidityCut, float ptMin, float ptMax) {
   int pid = Particle[1];
   double p0 = Particle[5];
   double p1 = Particle[2];
   double p2 = Particle[3];
   double p3 = Particle[4];
   double rapidity = 0.5 * log((p0 + p3) / (p0 - p3));
+  double pt = sqrt(p1 * p1 + p2 * p2);
 
   if (p1 == 0 && p2 == 0) return 0;  // These are spectators, some generators leave them in output files
   if (abs(rapidity) > RapidityCut) return 0;
+  if (pt < ptMin || pt > ptMax) return 0;
+
   switch (RelevantParticles) {
     case 1 :
       if (abs(pid) == 211) return 1;
