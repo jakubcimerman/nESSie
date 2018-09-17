@@ -83,6 +83,7 @@ int main() {
   double EmptyInput;
   double BinWidth = 2*M_PI/NoAzibins;
   double phi;
+  double qphi[NoEvents];
 
   // Loop over all events
   while (!data.eof()) {
@@ -107,7 +108,7 @@ int main() {
     }
 
     // Rotate event
-    Rotate(Particles, NoParticles, AnisotropyOrder);
+    qphi[EventNumber] = Rotate(Particles, NoParticles, AnisotropyOrder);
 
     // Fill event array
     for (long i=0; i < NoParticles; i++) {
@@ -226,7 +227,7 @@ int main() {
   ofstream file;
   ostringstream outDir;
   outDir << "./results/" << fixed << setfill('0') << setw(2);
-  outDir << now->tm_year - 100 << setw(2) << now->tm_mon << setw(2);
+  outDir << now->tm_year - 100 << setw(2) << now->tm_mon + 1 << setw(2);
   outDir << now->tm_mday << "_" << setw(2) << now->tm_hour << setw(2);
   outDir << now->tm_min << setw(2) << now->tm_sec << "_";
   string outstringdir(outDir.str());
@@ -275,6 +276,16 @@ int main() {
     }
     file.close();
   }
+
+  ostringstream outFile4;
+  outFile4 << outdir << "rotations";
+  string outstring4(outFile4.str());
+  const char* filename4 = outstring4.c_str();
+  file.open(filename4);
+  for (long enr=0; enr < NoEvents; enr++) {
+    file << enr << "\t" << qphi[enr] << endl;
+  }
+  file.close();
 
   return 0;
 }

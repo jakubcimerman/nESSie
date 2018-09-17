@@ -117,6 +117,7 @@ Output of this program is located in directory results. All result files contain
 \item \textit{yymmdd\_hhmmss\_id\_events} - This is the order of the events after sorting process. The numbers in this files are original order numbers of events.
 \item \textit{yymmdd\_hhmmss\_av\_bin} - There are histograms of average events for each class. That means you will find here \textit{NoBins} columns and \textit{NoAzibins} rows of data. For better plotting (in gnuplot for example) the first column contains middle azimuthal angle for each azimuthal bin.
 \item \textit{yymmdd\_hhmmss\_bin\_i} - Each of these files contain list of all events in class, their azimuthal histograms and also mean class number $\mu$, which is the last number in each row.
+\item \textit{yymmdd\_hhmmss\_rotations} - In this file you'll find directions of $q_n$ vector for each event. If you want to rotate an event, you have to rotate all particles by an angle $\frac{q_n}{\mathrm{AnisotropyOrder}}$.
 \end{itemize}
 
 \end{document}

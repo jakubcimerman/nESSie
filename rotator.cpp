@@ -16,7 +16,7 @@ double arct(double y, double x) {
   return result;
 }
 
-void Rotate(double** Particles, long NoParticles, int AnisotropyOrder) {
+double Rotate(double** Particles, long NoParticles, int AnisotropyOrder) {
   double qx = 0;
   double qy = 0;
   for (long ind = 0; ind < NoParticles; ind++) {
@@ -44,4 +44,5 @@ void Rotate(double** Particles, long NoParticles, int AnisotropyOrder) {
     Particles[ind][7] = x;
     Particles[ind][8] = y;
   }
+  return qphi;
 }
