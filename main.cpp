@@ -41,6 +41,7 @@ int main() {
 
   // Allocation of arrays
   double** Event = new double*[NoEvents];
+  const int BinIndexZero = NoProperties - NoAzibins;
   for (long i=0; i < NoEvents; i++) {
     Event[i] = new double[NoProperties];
   }
@@ -54,7 +55,7 @@ int main() {
   for (long i=0; i < NoEvents; i++) {
     Event[i][0] = 0;
     Event[i][1] = 0;
-    for (int j=4; j < NoProperties; j++) {
+    for (int j=BinIndexZero; j < NoProperties; j++) {
       Event[i][j] = 0;
     }
   }
@@ -116,7 +117,7 @@ int main() {
         phi = arct(Particles[i][3], Particles[i][2]);
         BinNumber = floor(phi/BinWidth);
         Event[EventNumber][1] += cos(AnisotropyOrder*phi);
-        Event[EventNumber][BinNumber + 4]++;
+        Event[EventNumber][BinNumber + BinIndexZero]++;
         Event[EventNumber][0]++;
         Event[EventNumber][2] = EventNumber;
       }
@@ -163,9 +164,9 @@ int main() {
         double TotalParticles = 0;
         double ParticlesInI = 0;
         for (long enr=mu*NoEvents/NoBins; enr < (mu+1)*NoEvents/NoBins; enr++) {
-          ParticlesInI += Event[enr][i + 4];
+          ParticlesInI += Event[enr][i + BinIndexZero];
           for (int bnr = 0; bnr < NoAzibins; bnr++) {
-            TotalParticles += Event[enr][bnr + 4];
+            TotalParticles += Event[enr][bnr + BinIndexZero];
           }
         }
         P_i_mu[i][mu] = ParticlesInI/TotalParticles;
@@ -177,14 +178,14 @@ int main() {
       for (int mu=0; mu < NoBins; mu++) {
         long double citatel = 0;
         for (int i=0; i< NoAzibins; i++) {
-          citatel += Event[enr][i + 4]*log(P_i_mu[i][mu]);
+          citatel += Event[enr][i + BinIndexZero]*log(P_i_mu[i][mu]);
         }
 
         long double menovatel = 0;
         for (int muu=0; muu < NoBins; muu++) {
           long double clen = 0;
           for (int i=0; i< NoAzibins; i++) {
-            clen += Event[enr][i + 4]*logl(P_i_mu[i][muu]);
+            clen += Event[enr][i + BinIndexZero]*logl(P_i_mu[i][muu]);
           }
           clen -= citatel;
           menovatel += expl(clen);
@@ -245,7 +246,7 @@ int main() {
     for (int mu=0; mu < NoBins; mu++) {
       double ParticlesInI = 0;
       for (long enr=mu*NoEvents/NoBins; enr < (mu+1)*NoEvents/NoBins; enr++) {
-        ParticlesInI += Event[enr][i + 4];
+        ParticlesInI += Event[enr][i + BinIndexZero];
       }
       file << floor(ParticlesInI*NoBins/NoEvents) << "\t";
     }
@@ -272,7 +273,7 @@ int main() {
     for (long enr=mu*NoEvents/NoBins; enr < (mu+1)*NoEvents/NoBins; enr++) {
       file << enr - mu*NoEvents/NoBins + 1 << "\t";
       for (int i=0; i < NoAzibins; i++) {
-        file << Event[enr][i + 4] << "\t";
+        file << Event[enr][i + BinIndexZero] << "\t";
       }
       file << Event[enr][3] << endl;
     }
