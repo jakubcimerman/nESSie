@@ -130,6 +130,8 @@ int main() {
       delete[] Particles[i];
     }
     delete [] Particles;
+    
+    if (EventNumber == NoEvents-1) break;
   }
 
   // Initial sorting according to value of q_n vector
